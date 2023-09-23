@@ -42,5 +42,40 @@ defmodule CowboyExample.ServerTest do
       assert response.status == 200
       assert {"content-type", "text/html"} in response.headers
     end
+
+    test "returns 404 Not Found when anything other than GET is sent" do
+      {:ok, response} =
+        :post
+        |> Finch.build("http://localhost:4041/greet/Elixir?greeting=Hola")
+        |> Finch.request(CowboyExample.Finch)
+
+      assert response.body == "404 Not Found"
+      assert response.status == 404
+      assert {"content-type", "text/html"} in response.headers
+    end
+  end
+
+  describe "GET /static/:page" do
+    test "returns static HTML with 200 when requesting index.html" do
+      {:ok, response} =
+        :get
+        |> Finch.build("http://localhost:4041/static/index.html")
+        |> Finch.request(CowboyExample.Finch)
+
+      assert response.body == "<h1>Hello World</h1>\n"
+      assert response.status == 200
+      assert {"content-type", "text/html"} in response.headers
+    end
+
+    test "returns 404 when requesting a file that does not exist" do
+      {:ok, response} =
+        :get
+        |> Finch.build("http://localhost:4041/static/bad_path.html")
+        |> Finch.request(CowboyExample.Finch)
+
+      assert response.body == "404 Not Found"
+      assert response.status == 404
+      assert {"content-type", "text/html"} in response.headers
+    end
   end
 end
