@@ -3,7 +3,7 @@ defmodule CowboyExample.Router do
   This module defines all the routes, params, and handlers.
   """
   require Logger
-  alias CowboyExample.Router.Handlers.{Root, Greet}
+  alias CowboyExample.Router.Handlers.{Root, Greet, Static}
 
   @doc """
   Returns the list of routes configured by this web server
@@ -14,7 +14,8 @@ defmodule CowboyExample.Router do
       {:_,
        [
          {"/", Root, []},
-         {"/greet/:who", [who: :nonempty], Greet, []}
+         {"/greet/:who", [who: :nonempty], Greet, []},
+         {"/static/:page", [page: :nonempty], Static, []}
        ]}
     ]
   end
