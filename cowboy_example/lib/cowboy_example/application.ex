@@ -5,12 +5,14 @@ defmodule CowboyExample.Application do
 
   use Application
 
+  @port Application.compile_env(:cowboy_example, :port, 4040)
+
   @impl true
   def start(_type, _args) do
     children = [
       # Starts a worker by calling: CowboyExample.Worker.start_link(arg)
       # {CowboyExample.Worker, arg}
-      {Task, fn -> CowboyExample.Server.start(4040) end}
+      {Task, fn -> CowboyExample.Server.start(@port) end}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
