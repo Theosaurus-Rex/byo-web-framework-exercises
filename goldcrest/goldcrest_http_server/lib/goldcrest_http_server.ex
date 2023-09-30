@@ -14,6 +14,8 @@ defmodule GoldcrestHttpServer do
   ]
 
   def start(port) do
+    ensure_configured!()
+
     case :gen_tcp.listen(port, @server_options) do
       {:ok, sock} ->
         Logger.info("Started a web server on port #{port}")
@@ -21,6 +23,13 @@ defmodule GoldcrestHttpServer do
 
       {:error, error} ->
         Logger.error("Cannot start server on port #{port}: #{error}")
+    end
+  end
+
+  def ensure_configured! do
+    case responder() do
+      nil -> raise "No `responder` configured for `goldcrest_http_server`"
+      _responder -> :ok
     end
   end
 
