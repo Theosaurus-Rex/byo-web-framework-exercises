@@ -37,12 +37,17 @@ defmodule GoldcrestHttpServer do
   end
 
   defp respond(req, method, path) do
-    # This part is different for different applications
+    %Goldcrest.HTTPResponse{} = resp = responder().resp(req, method, path)
+    resp_string = Goldcrest.HTTPResponse.to_string(resp)
 
     :gen_tcp.send(req, resp_string)
 
     Logger.info("Response sent: \n#{resp_string}")
 
     :gen_tcp.close(req)
+  end
+
+  defp responder do
+    Application.get_env(:goldcrest_http_server, :responder)
   end
 end
