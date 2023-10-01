@@ -1,8 +1,8 @@
-defmodule GoldcrestHttpServerTest do
+defmodule GoldcrestHTTPServerTest do
   use ExUnit.Case
-  doctest GoldcrestHttpServer
+  doctest GoldcrestHTTPServer
 
   test "greets the world" do
-    assert GoldcrestHttpServer.hello() == :world
+    assert GoldcrestHTTPServer.hello() == :world
   end
 end

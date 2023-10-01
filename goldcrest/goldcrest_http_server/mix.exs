@@ -1,4 +1,4 @@
-defmodule GoldcrestHttpServer.MixProject do
+defmodule GoldcrestHTTPServer.MixProject do
   use Mix.Project
 
   def project do

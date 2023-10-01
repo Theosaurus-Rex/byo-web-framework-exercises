@@ -1,4 +1,4 @@
-defmodule GoldcrestHttpServer do
+defmodule GoldcrestHTTPServer do
   @moduledoc """
   Starts a HTTP server on the given port
 
