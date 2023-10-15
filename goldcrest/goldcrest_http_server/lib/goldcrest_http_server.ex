@@ -38,6 +38,9 @@ defmodule Goldcrest.HTTPServer do
   defp respond(req, method, path) do
     # This part is different for different applications
 
+    %Goldcrest.HTTPResponse{} = resp = responder().resp(req, method, path)
+    resp_string = Goldcrest.HTTPResponse.to_string(resp)
+
     :gen_tcp.send(req, resp_string)
 
     Logger.info("Response sent: \n#{resp_string}")
