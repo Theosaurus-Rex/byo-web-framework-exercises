@@ -25,7 +25,7 @@ defmodule Goldcrest.HTTPServer do
     end
   end
 
-  defp ensure_configured! do
+  defp ensure_configured do
     case responder() do
       nil -> raise "No `responder` configured for `goldcrest_http_server`"
       _responder -> :ok
