@@ -1,10 +1,4 @@
-defmodule GoldcrestHTTPServer do
-  @moduledoc """
-  Starts a HTTP server on the given port
-
-  This server also logs all requests
-  """
-
+defmodule Goldcrest.HTTPServer do
   require Logger
 
   @server_options [
@@ -18,7 +12,8 @@ defmodule GoldcrestHTTPServer do
 
     case :gen_tcp.listen(port, @server_options) do
       {:ok, sock} ->
-        Logger.info("Started a web server on port #{port}")
+        Logger.info("Started a webserver on port #{port}")
+
         listen(sock)
 
       {:error, error} ->
@@ -26,26 +21,40 @@ defmodule GoldcrestHTTPServer do
     end
   end
 
-  def ensure_configured! do
+  defp ensure_configured! do
     case responder() do
       nil -> raise "No `responder` configured for `goldcrest_http_server`"
       _responder -> :ok
     end
   end
 
+  def child_spec(init_args) do
+    %{
+      id: __MODULE__,
+      start: {
+        Task,
+        :start_link,
+        [fn -> apply(__MODULE__, :start, init_args) end]
+      }
+    }
+  end
+
   def listen(sock) do
     {:ok, req} = :gen_tcp.accept(sock)
 
-    {:ok, {_http_req, method, {_type, path}, _v}} = :gen_tcp.recv(req, 0)
+    {
+      :ok,
+      {_http_req, method, {_type, path}, _v}
+    } = :gen_tcp.recv(req, 0)
 
     Logger.info("Received HTTP request #{method} at #{path}")
 
-    respond(req, method, path)
+    spawn(__MODULE__, :respond, [req, method, path])
 
     listen(sock)
   end
 
-  defp respond(req, method, path) do
+  def respond(req, method, path) do
     %Goldcrest.HTTPResponse{} = resp = responder().resp(req, method, path)
     resp_string = Goldcrest.HTTPResponse.to_string(resp)
 

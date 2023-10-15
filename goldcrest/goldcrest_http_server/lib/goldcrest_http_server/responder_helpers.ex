@@ -8,7 +8,7 @@ defmodule Goldcrest.HTTPServer.ResponderHelpers do
     %{resp | headers: headers}
   end
 
-  defp put_status(resp, status) do
+  def put_status(resp, status) do
     %{resp | status: status}
   end
 end
